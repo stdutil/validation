@@ -14,8 +14,11 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-const EMAIL_PATTERN string = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]" +
-	"(?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+const (
+	EMAIL_PATTERN string = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]" +
+		"(?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+	URL_PATTERN string = "((((https?|ftps?|gopher|telnet|nntp)://)|(mailto:|news:))([-%()_.!~*';/?:@&=+$,A-Za-z0-9])+)"
+)
 
 type (
 	NumericConstraint interface {
@@ -56,11 +59,23 @@ type (
 // ValidateEmail validates an e-mail address
 func ValidateEmail(email *string) error {
 	if email == nil || *email == "" {
-		return fmt.Errorf("is an invalid email address")
+		return fmt.Errorf("is empty")
 	}
 	re := regexp.MustCompile(EMAIL_PATTERN)
 	if !re.MatchString(*email) {
 		return fmt.Errorf("is an invalid email address")
+	}
+	return nil
+}
+
+// ValidateUrl validates a URL
+func ValidateUrl(url *string) error {
+	if url == nil || *url == "" {
+		return fmt.Errorf("is empty")
+	}
+	re := regexp.MustCompile(URL_PATTERN)
+	if !re.MatchString(*url) {
+		return fmt.Errorf("is an invalid URL")
 	}
 	return nil
 }
